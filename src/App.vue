@@ -2,11 +2,19 @@
 import { ref } from 'vue'
 
 const task = ref('')
-const tasks = ref<string[]>([])
+interface Task {
+  text: string
+  completed: boolean
+}
+
+const tasks = ref<Task[]>([])
 
 const addTask = () => {
   if (task.value.trim()) {
-    tasks.value.push(task.value)
+  tasks.value.push({
+  text: task.value,
+  completed: false
+})
     task.value = ''
   }
 }
@@ -30,10 +38,21 @@ const deleteTask = (index: number) => {
     </button>
 
     <ul>
-  <li v-for="(item, index) in tasks" :key="index">
-    {{ item }}
-    <button @click="deleteTask(index)">Delete</button>
-  </li>
+ 
+      <li v-for="(item, index) in tasks" :key="index">
+  <input
+    type="checkbox"
+    v-model="item.completed"
+  />
+
+  <span :class="{ completed: item.completed }">
+    {{ item.text }}
+  </span>
+
+  <button @click="deleteTask(index)">
+    Delete
+  </button>
+</li>
 </ul>
   </div>
 </template>
@@ -66,5 +85,9 @@ li {
   padding: 10px;
   border: 1px solid #ddd;
   margin-top: 10px;
+}
+.completed {
+  text-decoration: line-through;
+  color: gray;
 }
 </style>
